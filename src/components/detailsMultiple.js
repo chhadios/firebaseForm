@@ -23,9 +23,9 @@ const DetailsMultiple = (props) => {
         setButton(true);
         db.collection("liveVideo").add(
             {
-                CommissionRate: `${CommissionRate}`,
+                commissionRate: `${CommissionRate}`,
                 sharerText: `${sharerText}`,
-                livestreamtime: `${livestreamtime}`,
+                liveStreamTime: `${livestreamtime}`,
                 Pricerange: `${Pricerange}`,
                 sellerId: `${props.match.params.id}`,
                 state: `Scheduled`,
