@@ -58,3 +58,41 @@
 .form_label{
     display: block;
 }
+.form-label-seller{
+    display: block;
+    font-size: x-large;
+    margin-top: 10px;
+}
+.form-input-seller{
+    display: block;
+    width:200px;
+    height: 30px;
+    margin-left: 20px;
+    padding: 5px;
+   
+
+}
+.form-container-seller{
+    width:60%;
+    margin-left: 20% ;
+    margin-right: 20%;
+    border: solid 1px;
+    padding: 20px;
+}
+.file-seller{
+    margin-top: 10px;
+    border: solid 1px;
+    padding: 10px;
+}
+.btn-submit-seller{
+    margin: 20px;
+    width: 150px;
+    height: 30px;
+    background-color: blue;
+    color: white;
+    
+}
+.btn-submit-seller:hover{
+    background-color: aqua;
+    color: black;
+}

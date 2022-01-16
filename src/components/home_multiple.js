@@ -11,7 +11,7 @@ const Homemultiple = (props) => {
     const [files, setFiles] = useState([])
     const [imageurl, setimageurl] = useState([])
     const [loader, setloader] = useState(false)
-    const [sellerId, setsellerId] = useState()
+    const [sellerId, setsellerId] = useState("0")
     const [sellerr, setsellerr] = useState()
     const [catagory, setcatagory] = useState()
 
@@ -116,12 +116,12 @@ const Homemultiple = (props) => {
         props.history.push(`/details/${sellerId}/${sellerr}/${catagory}`)
 
     }
-
+    console.log(sellerId)
     return (
         <>
             <label htmlFor="ProductCategory" className="form-label">Product Category</label>
             <select name="ProductCategory" defaultValue="0" onChange={handleSelect} className="select"  >
-                <option value={0}>buisness name</option>
+                <option value="0">buisness name</option>
                 {uniqueArray.map(function (item) {
                     return (
                         <option key={item.phone} value={item.phone} className="categoryValue">{item.businessName}</option>
@@ -130,6 +130,9 @@ const Homemultiple = (props) => {
                 })}
             </select>
             <br />
+            {sellerId !="0" && sellerId != undefined ?
+
+            <div>
             <input className="file-input" type="file" multiple onChange={onFileChange} />
             <button className='btn' onClick={onUploadSubmission} > upload images</button>
             {loader ?
@@ -139,6 +142,9 @@ const Homemultiple = (props) => {
                 : null}
             <br />
             <button className='btn' onClick={onSubmission}>Add details</button>
+                </div>
+                    :null}
+                    <button className='btn' onClick={()=>{props.history.push('/seller')}}>move to seller page</button>
         </>
     )
 }

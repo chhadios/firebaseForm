@@ -79,7 +79,7 @@ const DetailsMultiple = (props) => {
                 itemName: `${itemName}`,
                 price: `${price}`,
                 quantity: `${quantity}`,
-                variations:{
+                variants:{
                     XS: `${sizeXS}`,
                     S: `${sizeS}`,
                     M: `${sizeM}`,
@@ -95,7 +95,7 @@ const DetailsMultiple = (props) => {
                 itemName: `${itemName}`,
                 price: `${price}`,
                 quantity: `${quantity}`,
-                variations:{
+                variants:{
                    standard:`${standard}`
                 }
             })
@@ -121,6 +121,7 @@ const DetailsMultiple = (props) => {
         });
         batch.commit().then(function () {
             alert('done')
+            props.history.push("/")
 
         })
 
@@ -200,6 +201,7 @@ const DetailsMultiple = (props) => {
 
                     <button onClick={(e) => handleUpdate(e)}>update all changes</button>
                     : null}
+                    
             </div>
         </>
     )
