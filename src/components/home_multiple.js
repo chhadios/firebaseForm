@@ -45,7 +45,7 @@ const Homemultiple = (props) => {
 
     const handleSelect = (e) => {
         setsellerId(e.target.value)
-        db.collection("Seller").where("sellerId", "==", e.target.value)
+        db.collection("Seller").where("phone", "==", e.target.value)
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
@@ -124,7 +124,7 @@ const Homemultiple = (props) => {
                 <option value={0}>buisness name</option>
                 {uniqueArray.map(function (item) {
                     return (
-                        <option key={item.sellerId} value={item.sellerId} className="categoryValue">{item.businessName}</option>
+                        <option key={item.phone} value={item.phone} className="categoryValue">{item.businessName}</option>
 
                     )
                 })}

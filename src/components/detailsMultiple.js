@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { db } from '../firebase/firestore';
 import { mycontext } from '../context';
 
@@ -15,8 +15,32 @@ const DetailsMultiple = (props) => {
     const [array, setarray] = useState([]);
     let [pp, setpp] = useState([]);
     const [docId, setdocId] = useState('');
+    const [sellerId, setsellerId] = useState('');
     const [Button, setButton] = useState(false);
+    const [variations, setvariations] = useState({});
+    const [sizeXS, setsizeXS] = useState();
+    const [sizeS, setsizeS] = useState();
+    const [sizeM, setsizeM] = useState();
+    const [sizeL, setsizeL] = useState();
+    const [sizeXL, setsizeXL] = useState();
+    const [sizeXXL, setsizeXXL] = useState();
+    const [sizeXXXL, setsizeXXXL] = useState();
+    const [standard, setstandard] = useState();
     
+    
+    useEffect(() => {
+        db.collection("Seller").where("phone", "==", props.match.params.id)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                setsellerId(doc.id)
+                console.log(sellerId)
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+    }, []);
 
     function handledefault(e) {
         e.preventDefault()
@@ -27,7 +51,7 @@ const DetailsMultiple = (props) => {
                 sharerText: `${sharerText}`,
                 liveStreamTime: `${livestreamtime}`,
                 Pricerange: `${Pricerange}`,
-                sellerId: `${props.match.params.id}`,
+                sellerId: `${sellerId}`,
                 state: `Scheduled`,
                 videoLink: ``,
                 category: `${props.match.params.catagory}`,
@@ -47,17 +71,41 @@ const DetailsMultiple = (props) => {
 
     function handleSubmit(e, url) {
         e.preventDefault()
-        array.unshift({
-            imageUrl: `${url}`,
-            itemName: `${itemName}`,
-            price: `${price}`,
-            quantity: `${quantity}`
-        })
+        if(standard==="0" || standard===null || standard===undefined || standard==="")
+        {
+
+            array.unshift({
+                imageUrl: `${url}`,
+                itemName: `${itemName}`,
+                price: `${price}`,
+                quantity: `${quantity}`,
+                variations:{
+                    XS: `${sizeXS}`,
+                    S: `${sizeS}`,
+                    M: `${sizeM}`,
+                    L: `${sizeL}`,
+                    XL: `${sizeXL}`,
+                    XXL: `${sizeXXL}`,
+                    XXXL: `${sizeXXXL}`
+                }
+            })
+        }else{
+            array.unshift({
+                imageUrl: `${url}`,
+                itemName: `${itemName}`,
+                price: `${price}`,
+                quantity: `${quantity}`,
+                variations:{
+                   standard:`${standard}`
+                }
+            })
+        }
         pp = array.filter(
             (ele, ind) => ind === array.findIndex(elem => elem.imageUrl === ele.imageUrl))
 
         console.log(array);
         console.log(pp);
+        setstandard("")
 
     }
 
@@ -78,6 +126,7 @@ const DetailsMultiple = (props) => {
 
     }
 
+
     return (
         <>
             <div className='form-container'>
@@ -96,6 +145,8 @@ const DetailsMultiple = (props) => {
 
                     </form>
                 </div>
+                {Button ?
+                <div>
                 {context.state.images ?
                     context.state.images.map((item, i) => (
                         <div className="cart-items" key={i}>
@@ -112,11 +163,37 @@ const DetailsMultiple = (props) => {
                                 <input onChange={e => setitemName(e.target.value)} className='form_input' type="text" />
                                 <label className='form_label'>price</label>
                                 <input onChange={e => setprice(e.target.value)} className='form_input' type="text" />
+                                
+                                <form>
+                                <label className='form_label'>number of standard units </label>
+                                <input onChange={e => setstandard(e.target.value)} className='form_input' type="text" />
+                                </form>
+                                
+                                <form> 
+                                <label className='form_label'>XS</label>
+                                <input onChange={e => setsizeXS(e.target.value)} className='form_input' type="text" />
+                                <label className='form_label'>S</label>
+                                <input onChange={e => setsizeS(e.target.value)} className='form_input' type="text" />
+                                <label className='form_label'>M</label>
+                                <input onChange={e => setsizeM(e.target.value)} className='form_input' type="text" />
+                                <label className='form_label'>L</label>
+                                <input onChange={e => setsizeL(e.target.value)} className='form_input' type="text" />
+                                <label className='form_label'>Xl</label>
+                                <input onChange={e => setsizeXL(e.target.value)} className='form_input' type="text" />
+                                <label className='form_label'>XXL</label>
+                                <input onChange={e => setsizeXXL(e.target.value)} className='form_input' type="text" />
+                                <label className='form_label'>XXXL</label>
+                                <input onChange={e => setsizeXXXL(e.target.value)} className='form_input' type="text" />
+                                </form>
+                                    
+
                                 <button className='btn-upd' onClick={(e) => handleSubmit(e, item)}>update</button>
-                            
+                                
                             </form>
                         </div>
                     ))
+                    : null}
+                    </div>
                     : null}
                 <br />
                 {Button ?
