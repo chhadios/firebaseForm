@@ -50,7 +50,7 @@ const DetailsMultiple = (props) => {
                 commissionRate: `${CommissionRate}`,
                 sharerText: `${sharerText}`,
                 liveStreamTime: `${livestreamtime}`,
-                Pricerange: `${Pricerange}`,
+                priceRange: `${Pricerange}`,
                 sellerId: `${sellerId}`,
                 state: `Scheduled`,
                 videoLink: ``,
