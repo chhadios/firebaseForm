@@ -1,10 +1,10 @@
-import React, { useState, useContext,useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { db } from '../firebase/firestore';
 import { mycontext } from '../context';
 
 const DetailsMultiple = (props) => {
     const context = useContext(mycontext);
-    const [files, setFiles] = useState()
+    const [files, setFiles] = useState("active")
     const [quantity, setquantity] = useState("");
     const [price, setprice] = useState("");
     const [itemName, setitemName] = useState("");
@@ -26,20 +26,21 @@ const DetailsMultiple = (props) => {
     const [sizeXXL, setsizeXXL] = useState();
     const [sizeXXXL, setsizeXXXL] = useState();
     const [standard, setstandard] = useState();
-    
-    
+    const [videolink, setvideolink] = useState();
+
+
     useEffect(() => {
         db.collection("Seller").where("phone", "==", props.match.params.id)
-        .get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                setsellerId(doc.id)
-                console.log(sellerId)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    setsellerId(doc.id)
+                    console.log(sellerId)
+                });
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
             });
-        })
-        .catch((error) => {
-            console.log("Error getting documents: ", error);
-        });
     }, []);
 
     function handledefault(e) {
@@ -52,8 +53,8 @@ const DetailsMultiple = (props) => {
                 liveStreamTime: `${livestreamtime}`,
                 priceRange: `${Pricerange}`,
                 sellerId: `${sellerId}`,
-                state: `Scheduled`,
-                videoLink: ``,
+                state: `${files}`,
+                videoLink: `${videolink}`,
                 category: `${props.match.params.catagory}`,
                 seller: `${props.match.params.seller}`,
                 createdAt: Date().toLocaleString()
@@ -71,15 +72,14 @@ const DetailsMultiple = (props) => {
 
     function handleSubmit(e, url) {
         e.preventDefault()
-        if(standard==="0" || standard===null || standard===undefined || standard==="")
-        {
+        if (standard === "0" || standard === null || standard === undefined || standard === "") {
 
             array.unshift({
                 imageUrl: `${url}`,
                 itemName: `${itemName}`,
                 price: `${price}`,
-                quantity: `${quantity}`,
-                variants:{
+                
+                variants: {
                     XS: `${sizeXS}`,
                     S: `${sizeS}`,
                     M: `${sizeM}`,
@@ -89,33 +89,45 @@ const DetailsMultiple = (props) => {
                     XXXL: `${sizeXXXL}`
                 }
             })
-        }else{
+        } else {
             array.unshift({
                 imageUrl: `${url}`,
                 itemName: `${itemName}`,
                 price: `${price}`,
-                quantity: `${quantity}`,
-                variants:{
-                   standard:`${standard}`
+                
+                variants: {
+                    standard: `${standard}`
                 }
             })
         }
-        pp = array.filter(
-            (ele, ind) => ind === array.findIndex(elem => elem.imageUrl === ele.imageUrl))
 
         console.log(array);
-        console.log(pp);
-        setstandard("")
+        setstandard();
+        setsizeS();
+        setsizeXS();
+        setsizeM();
+        setsizeL();
+        setsizeXL();
+        setsizeXXL();
+        setsizeXXXL();
+        setitemName("");
+        setprice("");
+        // pp = array.filter(
+        //     (ele, ind) => ind === array.findIndex(elem => elem.imageUrl === ele.imageUrl))
 
+        // console.log(pp);
     }
+
 
 
     function handleUpdate(e, url) {
         e.preventDefault()
 
+    
+
         console.log(docId)
         var batch = db.batch()
-        pp.forEach((doc) => {
+        array.forEach((doc) => {
             var docRef = db.collection("liveVideo").doc(`${docId}`).collection("products").doc(); //automatically generate unique id
             batch.set(docRef, doc);
         });
@@ -142,58 +154,64 @@ const DetailsMultiple = (props) => {
                         <input onChange={e => setlivestreamtime(e.target.value)} className='form_input' type="text" />
                         <label className='form_label'>Price range</label>
                         <input onChange={e => setPricerange(e.target.value)} className='form_input' type="text" />
+                        <label className='form_label'>video link</label>
+                        <input onChange={e => setvideolink(e.target.value)} className='form_input' type="text" />
+                        <select name="State" defaultValue="active" onChange={e => setFiles(e.target.value)} className="select"  >
+                            <option value="active">active</option>
+                            <option value="inactive">inactive</option>
+                            <option value="scheduled">scheduled</option>
+                        </select>
                         <button className='btn-upd' onClick={(e) => handledefault(e)}>update</button>
 
                     </form>
                 </div>
                 {Button ?
-                <div>
-                {context.state.images ?
-                    context.state.images.map((item, i) => (
-                        <div className="cart-items" key={i}>
+                    <div>
+                        {context.state.images ?
+                            context.state.images.map((item, i) => (
+                                <div className="cart-items" key={i}>
 
-                            <img
-                                src={item}
-                                alt="img"
-                                className='image'
-                            />
-                            <form className='form'>
-                                <label className='form_label'>Quantity</label>
-                                <input onChange={e => setquantity(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>item name</label>
-                                <input onChange={e => setitemName(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>price</label>
-                                <input onChange={e => setprice(e.target.value)} className='form_input' type="text" />
-                                
-                                <form>
-                                <label className='form_label'>number of standard units </label>
-                                <input onChange={e => setstandard(e.target.value)} className='form_input' type="text" />
-                                </form>
-                                
-                                <form> 
-                                <label className='form_label'>XS</label>
-                                <input onChange={e => setsizeXS(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>S</label>
-                                <input onChange={e => setsizeS(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>M</label>
-                                <input onChange={e => setsizeM(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>L</label>
-                                <input onChange={e => setsizeL(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>Xl</label>
-                                <input onChange={e => setsizeXL(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>XXL</label>
-                                <input onChange={e => setsizeXXL(e.target.value)} className='form_input' type="text" />
-                                <label className='form_label'>XXXL</label>
-                                <input onChange={e => setsizeXXXL(e.target.value)} className='form_input' type="text" />
-                                </form>
-                                    
+                                    <img
+                                        src={item}
+                                        alt="img"
+                                        className='image'
+                                    />
+                                    <form className='form'>
+                                        <label className='form_label'>item name</label>
+                                        <input onChange={e => setitemName(e.target.value)} className='form_input' type="text" />
+                                        <label className='form_label'>price</label>
+                                        <input onChange={e => setprice(e.target.value)} className='form_input' type="text" />
 
-                                <button className='btn-upd' onClick={(e) => handleSubmit(e, item)}>update</button>
-                                
-                            </form>
-                        </div>
-                    ))
-                    : null}
+                                        <form>
+                                            <label className='form_label'>number of standard units </label>
+                                            <input onChange={e => setstandard(e.target.value)} className='form_input' type="text" />
+                                        </form>
+
+                                        <form>
+                                            <label className='form_label'>XS</label>
+                                            <input onChange={e => setsizeXS(e.target.value)}  className='form_input' type="text" />
+                                            <label className='form_label'>S</label>
+                                            <input onChange={e => setsizeS(e.target.value)} className='form_input' type="text" />
+                                            <label className='form_label'>M</label>
+                                            <input onChange={e => setsizeM(e.target.value)} className='form_input' type="text" />
+                                            <label className='form_label'>L</label>
+                                            <input onChange={e => setsizeL(e.target.value)} className='form_input' type="text" />
+                                            <label className='form_label'>Xl</label>
+                                            <input onChange={e => setsizeXL(e.target.value)} className='form_input' type="text" />
+                                            <label className='form_label'>XXL</label>
+                                            <input onChange={e => setsizeXXL(e.target.value)} className='form_input' type="text" />
+                                            <label className='form_label'>XXXL</label>
+                                            <input onChange={e => setsizeXXXL(e.target.value)} className='form_input' type="text" />
+
+                                        </form>
+
+
+                                        <button className='btn-upd' onClick={(e) => handleSubmit(e, item)}>update</button>
+
+                                    </form>
+                                </div>
+                            ))
+                            : null}
                     </div>
                     : null}
                 <br />
@@ -201,7 +219,7 @@ const DetailsMultiple = (props) => {
 
                     <button onClick={(e) => handleUpdate(e)}>update all changes</button>
                     : null}
-                    
+
             </div>
         </>
     )
